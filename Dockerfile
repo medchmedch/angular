@@ -1,12 +1,9 @@
-FROM node:16.3.0-alpine
+FROM node:12.7-alpine AS build
 WORKDIR /app
-COPY package.json .
-COPY package-lock.json .
-RUN npm config set legacy-peer-deps true
-RUN npm install
-COPY . .
-RUN npm run build 
+COPY / ./
+COPY package*.json ./
 
-FROM nginx:latest
-COPY --from=BUILD /app/dist/crudtuto-Front /usr/share/nginx/html
-EXPOSE 80
+RUN npm install -g @angular/cli@10.0.4 && \
+    npm install && \
+    ng build
+COPY . .
